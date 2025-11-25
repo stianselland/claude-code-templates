@@ -35,7 +35,7 @@ OWASP ASVS L1 REQUIREMENTS:
 
 In addition to the security categories below, also check changes against these project-specific ASVS requirements:
 
-!`cat owasp-asvs-l1.md`
+!`cat OWASP-ASVS-L1.md`
 
 OBJECTIVE:
 Perform a security-focused code review to identify HIGH-CONFIDENCE security vulnerabilities that could have real exploitation potential. This is not a general code review - focus ONLY on security implications newly added by this PR. Do not comment on existing security concerns.
