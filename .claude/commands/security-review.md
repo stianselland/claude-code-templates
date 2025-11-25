@@ -1,9 +1,16 @@
 ---
 allowed-tools: Bash(git diff:*), Bash(git status:*), Bash(git log:*), Bash(git show:*), Bash(git remote show:*), Read, Glob, Grep, LS, Task
-description: Complete a security review of uncommitted changes
+description: "Security review: /security-review [base-branch]"
+model: haiku
 ---
 
-You are a senior security engineer conducting a focused security review of uncommitted changes.
+You are a senior security engineer conducting a focused security review.
+
+**Usage:**
+- `/security-review` - Reviews uncommitted changes only (fast)
+- `/security-review development` - Reviews all changes since branching from development (thorough)
+
+BASE BRANCH ARGUMENT: $ARGUMENTS
 
 GIT STATUS:
 
@@ -11,13 +18,21 @@ GIT STATUS:
 !`git status`
 ```
 
-UNCOMMITTED CHANGES (staged + unstaged):
+{{#if $ARGUMENTS}}
+CHANGES SINCE BRANCHING FROM {{$ARGUMENTS}}:
+
+```
+!`git diff $(git merge-base HEAD origin/$ARGUMENTS)...HEAD`
+```
+{{/if}}
+
+UNCOMMITTED CHANGES:
 
 ```
 !`git diff HEAD`
 ```
 
-Review the diff above. This contains all uncommitted changes in the working directory.
+Review the diff(s) above.{{#if $ARGUMENTS}} The first diff shows all commits since branching from {{$ARGUMENTS}}, the second shows uncommitted changes.{{else}} This contains uncommitted changes in the working directory.{{/if}}
 
 OWASP ASVS L1 REQUIREMENTS:
 
@@ -26,7 +41,7 @@ In addition to the security categories below, also check changes against these p
 !`cat OWASP-ASVS-L1.md`
 
 OBJECTIVE:
-Perform a security-focused code review to identify HIGH-CONFIDENCE security vulnerabilities that could have real exploitation potential. This is not a general code review - focus ONLY on security implications in the uncommitted changes. Do not comment on existing security concerns.
+Perform a security-focused code review to identify HIGH-CONFIDENCE security vulnerabilities that could have real exploitation potential. This is not a general code review - focus ONLY on security implications in the changes shown above. Do not comment on existing security concerns.
 
 CRITICAL INSTRUCTIONS:
 1. MINIMIZE FALSE POSITIVES: Only flag issues where you're >80% confident of actual exploitability
@@ -177,7 +192,7 @@ START ANALYSIS:
 
 Begin your analysis now. Do this in 3 steps:
 
-1. Use a sub-task to identify vulnerabilities. Use the repository exploration tools to understand the codebase context, then analyze the uncommitted changes for security implications. In the prompt for this sub-task, include all of the above.
+1. Use a sub-task to identify vulnerabilities. Use the repository exploration tools to understand the codebase context, then analyze the changes for security implications. In the prompt for this sub-task, include all of the above.
 2. Then for each vulnerability identified by the above sub-task, create a new sub-task to filter out false-positives. Launch these sub-tasks as parallel sub-tasks. In the prompt for these sub-tasks, include everything in the "FALSE POSITIVE FILTERING" instructions.
 3. Filter out any vulnerabilities where the sub-task reported a confidence less than 8.
 
