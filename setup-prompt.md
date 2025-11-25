@@ -6,12 +6,12 @@ Use this prompt when setting up CLAUDE.md for an existing project.
 
 ## Workflow
 
-1. Copy `base-claude.md` to your project root as `CLAUDE.md`
+1. Replace `CLAUDE.md ` in your project with the content in `base-claude.md`
 2. Open Claude Code in the project directory
 3. Paste the prompt below
 4. Review Claude's output and verify accuracy
 5. Ask Claude to make corrections if needed
-6. Finalize the CLAUDE.md file
+6. Commit the CLAUDE.md file
 
 ---
 

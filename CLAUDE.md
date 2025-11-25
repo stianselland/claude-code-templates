@@ -1,146 +1,28 @@
-# Next.js 15 SaaS Template
+# CLAUDE.md
 
-## Critical Rules
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-These override all default behavior:
+## Purpose
 
-- **No full-file rewrites** – Always use minimal diffs unless explicitly asked
-- **No new dependencies** without approval
-- **No invented paths or architecture** – Follow existing patterns exactly
-- **No API routes** except for webhooks (Stripe)
-- **No raw SQL** – Drizzle ORM only
-- **No verbose explanations** – Output code, not commentary
-- **Security review required** – Validate inputs, check auth, sanitize data before finalizing
+This repository contains CLAUDE.md templates and supporting files for configuring Claude Code in other projects. It is not an application codebase.
 
-## Security Requirements
+## Repository Contents
 
-All code must:
+- `base-claude.md` - Base template for creating project-specific CLAUDE.md files
+- `owasp-asvs-l1.md` - OWASP ASVS Level 1 security checklist for security reviews
+- `setup-prompt.md` - Workflow guide and prompt for setting up CLAUDE.md in new projects
+- `.claude/commands/security-review.md` - Custom slash command for security code reviews
 
-- Validate and sanitize all user input
-- Use parameterized queries (Drizzle handles this)
-- Enforce Clerk authentication in all Server Actions
-- Never log secrets or sensitive data
-- Follow Stripe webhook signature verification
+## Usage
 
-## Commands
+When setting up a new project:
 
-```bash
-# Development
-npm run dev              # Start dev server (Turbopack)
-npm run build            # Production build
+1. Copy `base-claude.md` content to the target project as `CLAUDE.md`
+2. Follow the workflow in `setup-prompt.md` to customize for the specific codebase
+3. Optionally copy `.claude/commands/security-review.md` for security review capability
 
-# Code Quality
-npm run lint             # ESLint
-npm run lint:fix         # Auto-fix lint issues
-npm run types            # TypeScript check
-npm run format:write     # Prettier
-npm run clean            # Lint + Prettier
+## Editing Templates
 
-# Database
-npx drizzle-kit push     # Push schema changes
-npx drizzle-kit generate # Generate migrations
-npx drizzle-kit migrate  # Run migrations
-npx bun db/seed          # Seed database
-npx supabase start       # Local Supabase
-
-# Testing
-npm run test             # All tests
-npm run test:unit        # Jest
-npm run test:e2e         # Playwright
-
-# UI
-npx shadcn@latest add [component]
-```
-
-## Architecture
-
-**Stack:** Next.js 15 (App Router), Server Actions, Drizzle ORM, Supabase PostgreSQL, Clerk, Stripe, shadcn/ui
-
-### Route Structure
-
-```
-/app
-├── (unauthenticated)/
-│   ├── (marketing)/     # Landing, pricing, features
-│   └── (auth)/          # Sign-in/up flows
-├── (authenticated)/
-│   └── dashboard/       # Protected app modules
-└── api/                 # Webhooks ONLY (Stripe)
-```
-
-### Key Directories
-
-```
-/actions         # Server Actions (all mutations)
-/components/ui   # shadcn/ui components (use first)
-/components      # App-specific components
-/db/schema       # Drizzle schema definitions
-/lib             # Utilities and helpers
-```
-
-### Data Flow
-
-1. Clerk → auth state
-2. Server Action → validate → auth check → Drizzle query → return
-3. Stripe webhooks → `/api/webhooks/stripe`
-
-## Coding Standards
-
-### TypeScript & React
-
-- Functional components only, with typed props interfaces
-- React hooks only (no class components)
-- Server Components by default, `"use client"` only when needed
-- Keep JSX minimal – extract logic to hooks or utilities
-
-### Server Actions
-
-```typescript
-"use server"
-
-export async function updateThing(input: Input): Promise<Result> {
-  // 1. Validate input
-  // 2. Check auth (Clerk)
-  // 3. Database operation (Drizzle)
-  // 4. Return result
-}
-```
-
-### File Naming
-
-- Files: `kebab-case.ts`, `kebab-case.tsx`
-- Components: `PascalCase` export
-- Actions: `verbNoun.ts` (e.g., `createUser.ts`, `updateSubscription.ts`)
-
-### Imports
-
-```typescript
-// 1. External packages
-import { auth } from "@clerk/nextjs/server"
-
-// 2. Internal aliases (@/)
-import { db } from "@/db"
-
-// 3. Relative imports
-import { formatDate } from "./utils"
-```
-
-## Workflow
-
-For changes beyond simple fixes:
-
-1. Propose a brief plan (3-5 bullets)
-2. Wait for approval
-3. Output minimal diffs
-4. Self-review: no duplication, secure, matches conventions
-
-For small fixes: proceed directly with minimal diffs.
-
-## Environment Variables
-
-```
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-CLERK_SECRET_KEY
-STRIPE_SECRET_KEY
-DATABASE_URL (Supabase)
-```
+- Keep templates generic and adaptable to different tech stacks
+- Maintain placeholder sections (marked with `[brackets]`) for project-specific values
+- Security checklist in `owasp-asvs-l1.md` follows OWASP ASVS L1 categories
